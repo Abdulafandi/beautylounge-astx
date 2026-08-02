@@ -195,8 +195,8 @@
   }
   .ing{
     background:var(--cream);border:1px solid var(--line-paper);border-radius:6px;
-    padding:1.35rem 1.4rem 1.25rem;position:relative;
-    transition:transform .25s,box-shadow .25s;
+    padding:1.35rem 1.4rem 1.25rem;position:relative;overflow:hidden;
+    transition:transform .25s,box-shadow .25s,border-color .6s;
   }
   .ing:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(60,42,10,.12)}
   .ing .sam{font-family:var(--mono);font-size:.66rem;letter-spacing:.22em;color:var(--turmeric-deep);text-transform:uppercase}
@@ -204,6 +204,26 @@
   .ing p{font-size:.92rem;color:#5d4c2f;line-height:1.5}
   .ing[data-hot] .sam{color:var(--chili)}
   .ing[data-green] .sam{color:var(--leaf)}
+
+  /* scroll-lit photo backgrounds (images attach only if the asset exists) */
+  .ing .ing-photo{
+    position:absolute;inset:0;z-index:0;pointer-events:none;
+    opacity:0;transform:scale(1.14);
+    transition:opacity 1.1s ease,transform 1.6s cubic-bezier(.22,.8,.24,1);
+  }
+  .ing .ing-photo img{width:100%;height:100%;object-fit:cover}
+  .ing .ing-photo::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(178deg,rgba(23,16,9,.18) 30%,rgba(23,16,9,.78) 78%,rgba(23,16,9,.9));
+  }
+  .ing .sam,.ing h3,.ing p{position:relative;z-index:1;transition:color .8s ease}
+  .ing.lit{border-color:var(--ink-soft)}
+  .ing.lit .ing-photo{opacity:1;transform:scale(1.02)}
+  .ing.lit:hover .ing-photo{transform:scale(1.07)}
+  .ing.lit h3{color:var(--cream)}
+  .ing.lit p{color:#E4D8BC}
+  .ing.lit .sam{color:var(--honey)}
+  .ing.lit[data-hot] .sam{color:#F19A85}
   .ing-foot{
     margin-top:2.4rem;display:flex;align-items:center;gap:1.4rem;flex-wrap:wrap;
     font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;color:#7c6337;
@@ -390,15 +410,15 @@
           in your kitchen's language — and ours.</p>
       </div>
       <div class="ing-grid">
-        <article class="ing rv"><span class="sam">Ago</span><h3>Turmeric</h3><p>The golden root at the heart of every batch — it gives Tasiaeafe its color.</p></article>
-        <article class="ing rv"><span class="sam">Fiu</span><h3>Ginger</h3><p>Fresh island heat that wakes the whole blend up.</p></article>
-        <article class="ing rv"><span class="sam">Kalika</span><h3>Garlic</h3><p>The strong stuff — mellowed by a slow simmer.</p></article>
-        <article class="ing rv"><span class="sam">Sinamoni</span><h3>Cinnamon</h3><p>Warm spice, steeped until it rounds out the roots.</p></article>
-        <article class="ing rv" data-hot><span class="sam">Polo feu</span><h3>Cayenne pepper</h3><p>A clean burn that lingers just long enough.</p></article>
-        <article class="ing rv"><span class="sam">Suāuu olive</span><h3>Olive oil</h3><p>A golden spoonful to carry the spices.</p></article>
-        <article class="ing rv"><span class="sam">Meli</span><h3>Honey</h3><p>Island sweetness — no sugar, no syrup.</p></article>
-        <article class="ing rv"><span class="sam">Tipolo</span><h3>Lemon</h3><p>Cut fresh and squeezed bright, jug by jug.</p></article>
-        <article class="ing rv"><span class="sam">Vai</span><h3>Purified water</h3><p>Filtered and boiled — nothing untreated goes in.</p></article>
+        <article class="ing rv" data-img="turmeric"><span class="sam">Ago</span><h3>Turmeric</h3><p>The golden root at the heart of every batch — it gives Tasiaeafe its color.</p></article>
+        <article class="ing rv" data-img="ginger"><span class="sam">Fiu</span><h3>Ginger</h3><p>Fresh island heat that wakes the whole blend up.</p></article>
+        <article class="ing rv" data-img="garlic"><span class="sam">Kalika</span><h3>Garlic</h3><p>The strong stuff — mellowed by a slow simmer.</p></article>
+        <article class="ing rv" data-img="cinnamon"><span class="sam">Sinamoni</span><h3>Cinnamon</h3><p>Warm spice, steeped until it rounds out the roots.</p></article>
+        <article class="ing rv" data-img="cayenne" data-hot><span class="sam">Polo feu</span><h3>Cayenne pepper</h3><p>A clean burn that lingers just long enough.</p></article>
+        <article class="ing rv" data-img="olive-oil"><span class="sam">Suāuu olive</span><h3>Olive oil</h3><p>A golden spoonful to carry the spices.</p></article>
+        <article class="ing rv" data-img="honey"><span class="sam">Meli</span><h3>Honey</h3><p>Island sweetness — no sugar, no syrup.</p></article>
+        <article class="ing rv" data-img="lemon"><span class="sam">Tipolo</span><h3>Lemon</h3><p>Cut fresh and squeezed bright, jug by jug.</p></article>
+        <article class="ing rv" data-img="water"><span class="sam">Vai</span><h3>Purified water</h3><p>Filtered and boiled — nothing untreated goes in.</p></article>
       </div>
       <div class="ing-foot rv">
         <span class="shake-tag">SHAKE WELL. KEEP REFRIGERATED.</span>
@@ -509,6 +529,32 @@
   // stagger grids: delay children within the same parent
   document.querySelectorAll('.ing-grid, .proc-grid').forEach(grid => {
     [...grid.children].forEach((el, i) => { el.style.transitionDelay = (i * 70) + 'ms'; });
+  });
+
+  // ingredient photo backgrounds: attach only if the asset exists,
+  // then light up when the card itself is scrolled into view
+  const lightUp = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting) {
+        const card = e.target;
+        setTimeout(() => card.classList.add('lit'), (card.dataset.i || 0) * 110);
+        lightUp.unobserve(card);
+      }
+    }
+  }, { threshold: 0.55 });
+
+  document.querySelectorAll('.ing[data-img]').forEach((card, i) => {
+    const img = new Image();
+    img.src = 'assets/ing-' + card.dataset.img + '.webp';
+    img.alt = '';
+    img.onload = () => {
+      const wrap = document.createElement('div');
+      wrap.className = 'ing-photo';
+      wrap.appendChild(img);
+      card.prepend(wrap);
+      card.dataset.i = i % 3;
+      lightUp.observe(card);
+    };
   });
 </script>
 </body>
