@@ -458,15 +458,15 @@
           in your kitchen's language — and ours.</p>
       </div>
       <div class="ing-grid">
-        <article class="ing rv" data-img="turmeric"><span class="sam">Ago</span><h3>Turmeric</h3><p>The golden root at the heart of every batch — it gives Tasiaeafe its color.</p></article>
-        <article class="ing rv" data-img="ginger"><span class="sam">Fiu</span><h3>Ginger</h3><p>Fresh island heat that wakes the whole blend up.</p></article>
-        <article class="ing rv" data-img="garlic"><span class="sam">Kalika</span><h3>Garlic</h3><p>The strong stuff — mellowed by a slow simmer.</p></article>
-        <article class="ing rv" data-img="cinnamon"><span class="sam">Sinamoni</span><h3>Cinnamon</h3><p>Warm spice, steeped until it rounds out the roots.</p></article>
-        <article class="ing rv" data-img="cayenne" data-hot><span class="sam">Polo feu</span><h3>Cayenne pepper</h3><p>A clean burn that lingers just long enough.</p></article>
-        <article class="ing rv" data-img="olive-oil"><span class="sam">Suāuu olive</span><h3>Olive oil</h3><p>A golden spoonful to carry the spices.</p></article>
-        <article class="ing rv" data-img="honey"><span class="sam">Meli</span><h3>Honey</h3><p>Island sweetness — no sugar, no syrup.</p></article>
-        <article class="ing rv" data-img="lemon"><span class="sam">Tipolo</span><h3>Lemon</h3><p>Cut fresh and squeezed bright, jug by jug.</p></article>
-        <article class="ing rv" data-img="water"><span class="sam">Vai</span><h3>Purified water</h3><p>Filtered and boiled — nothing untreated goes in.</p></article>
+        <article class="ing" data-img="turmeric"><span class="sam">Ago</span><h3>Turmeric</h3><p>The golden root at the heart of every batch — it gives Tasiaeafe its color.</p></article>
+        <article class="ing" data-img="ginger"><span class="sam">Fiu</span><h3>Ginger</h3><p>Fresh island heat that wakes the whole blend up.</p></article>
+        <article class="ing" data-img="garlic"><span class="sam">Kalika</span><h3>Garlic</h3><p>The strong stuff — mellowed by a slow simmer.</p></article>
+        <article class="ing" data-img="cinnamon"><span class="sam">Sinamoni</span><h3>Cinnamon</h3><p>Warm spice, steeped until it rounds out the roots.</p></article>
+        <article class="ing" data-img="cayenne" data-hot><span class="sam">Polo feu</span><h3>Cayenne pepper</h3><p>A clean burn that lingers just long enough.</p></article>
+        <article class="ing" data-img="olive-oil"><span class="sam">Suāuu olive</span><h3>Olive oil</h3><p>A golden spoonful to carry the spices.</p></article>
+        <article class="ing" data-img="honey"><span class="sam">Meli</span><h3>Honey</h3><p>Island sweetness — no sugar, no syrup.</p></article>
+        <article class="ing" data-img="lemon"><span class="sam">Tipolo</span><h3>Lemon</h3><p>Cut fresh and squeezed bright, jug by jug.</p></article>
+        <article class="ing" data-img="water"><span class="sam">Vai</span><h3>Purified water</h3><p>Filtered and boiled — nothing untreated goes in.</p></article>
       </div>
       <div class="ing-foot rv">
         <span class="shake-tag">SHAKE WELL. KEEP REFRIGERATED.</span>
@@ -612,7 +612,7 @@
   document.querySelectorAll('.rv').forEach((el, i) => io.observe(el));
 
   // stagger grids: delay children within the same parent
-  document.querySelectorAll('.ing-grid, .proc-grid, .rec-grid').forEach(grid => {
+  document.querySelectorAll('.proc-grid, .rec-grid').forEach(grid => {
     [...grid.children].forEach((el, i) => { el.style.transitionDelay = (i * 70) + 'ms'; });
   });
 
