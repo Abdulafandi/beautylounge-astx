@@ -213,8 +213,9 @@
   .ing[data-hot] .sam{color:var(--chili)}
   .ing[data-green] .sam{color:var(--leaf)}
 
-  /* scroll-spotlight photo backgrounds (images attach only if the asset exists):
-     exactly one card is lit at a time — the one under the scroll focus line */
+  /* photo backgrounds (images attach only if the asset exists). Two ways in:
+     mouse/desktop lights a card on hover; touch walks a one-at-a-time scroll
+     spotlight instead (see .ing.lit + the hover-capable media block below) */
   .ing .ing-photo{
     position:absolute;inset:0;z-index:0;pointer-events:none;
     opacity:0;transform:scale(1.08);
@@ -228,11 +229,21 @@
   .ing .sam,.ing h3,.ing p{position:relative;z-index:1;transition:color .6s ease}
   .ing.lit{border-color:var(--ink-soft)}
   .ing.lit .ing-photo{opacity:1;transform:scale(1.02)}
-  .ing.lit:hover .ing-photo{transform:scale(1.07)}
   .ing.lit h3{color:var(--cream)}
   .ing.lit p{color:#E4D8BC}
   .ing.lit .sam{color:var(--honey)}
   .ing.lit[data-hot] .sam{color:#F19A85}
+
+  /* mouse present: the photo answers the cursor, not the scrollbar */
+  @media(hover:hover) and (pointer:fine){
+    .ing .ing-photo{transition:opacity .55s ease,transform 1.4s cubic-bezier(.22,.8,.24,1)}
+    .ing:hover{border-color:var(--ink-soft)}
+    .ing:hover .ing-photo{opacity:1;transform:scale(1.03)}
+    .ing:hover h3{color:var(--cream)}
+    .ing:hover p{color:#E4D8BC}
+    .ing:hover .sam{color:var(--honey)}
+    .ing[data-hot]:hover .sam{color:#F19A85}
+  }
   .ing-foot{
     margin-top:2.4rem;display:flex;align-items:center;gap:1.4rem;flex-wrap:wrap;
     font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;color:#7c6337;
@@ -616,15 +627,21 @@
     [...grid.children].forEach((el, i) => { el.style.transitionDelay = (i * 70) + 'ms'; });
   });
 
-  // ingredient spotlight: photos attach only if the asset exists, then exactly ONE
-  // card is lit at a time. Scroll progress through the grid maps to a card index,
-  // so the light walks the cards in label order — and walks backwards on scroll-up.
+  // ingredient photos: attach only if the asset exists. With a mouse, CSS :hover
+  // lights the card under the cursor. Without one (touch), scroll progress through
+  // the grid maps to a card index, so exactly ONE card is lit at a time and the
+  // light walks the cards in label order — backwards on scroll-up.
   const ingGrid = document.querySelector('.ing-grid');
   const ingCards = [...ingGrid.querySelectorAll('.ing[data-img]')];
+  const hoverMode = matchMedia('(hover:hover) and (pointer:fine)');
   let litCard = null, spotQueued = false;
 
   function updateSpotlight() {
     spotQueued = false;
+    if (hoverMode.matches) {
+      if (litCard) { litCard.classList.remove('lit'); litCard = null; }
+      return;
+    }
     const r = ingGrid.getBoundingClientRect();
     const vh = window.innerHeight;
     // a card lights only once it has been scrolled up to the lower-middle of the
@@ -646,6 +663,7 @@
   }
   addEventListener('scroll', queueSpotlight, { passive: true });
   addEventListener('resize', queueSpotlight, { passive: true });
+  hoverMode.addEventListener('change', queueSpotlight);
 
   ingCards.forEach(card => {
     const img = new Image();
