@@ -33,7 +33,9 @@
   --hairline: 1px solid oklch(50% 0.075 80 / .38);
 }
 
-html { scroll-behavior: smooth; }
+/* clip (not hidden) — keeps the hero halo bleeding off-canvas without letting the
+   viewport pan sideways, and leaves position:sticky working */
+html { scroll-behavior: smooth; overflow-x: clip; }
 
 body {
   background: var(--ink);
@@ -143,7 +145,13 @@ a:focus-visible, button:focus-visible {
 }
 .topbar-nav a:hover { color: var(--gold-hi); }
 .topbar-nav a:hover::after { right: 0; }
-.topbar-cta { white-space: nowrap; }
+.topbar-cta {
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-size: .68rem;
+  letter-spacing: .11em;
+  padding: .92em 1.45em .86em;
+}
 
 /* ==========================================================================
    HERO
@@ -783,6 +791,11 @@ a:focus-visible, button:focus-visible {
    RESPONSIVE
    ========================================================================== */
 
+/* brand collapses to the mark before the bar can crowd the CTA */
+@media (max-width: 1180px) {
+  .topbar-word { display: none; }
+}
+
 @media (max-width: 1020px) {
   .hero-inner { grid-template-columns: 1fr; }
   .hero-portrait { justify-self: start; margin-top: var(--s6); }
@@ -795,9 +808,13 @@ a:focus-visible, button:focus-visible {
   .works figure:nth-child(2), .works figure:nth-child(4) { transform: none; }
 }
 
-@media (max-width: 760px) {
+/* nav drops out while there is still room to spare, never mid-crowding */
+@media (max-width: 860px) {
   .topbar-nav { display: none; }
-  .topbar-word { display: none; }
+  .topbar-cta { margin-left: auto; }
+}
+
+@media (max-width: 760px) {
   .hero { padding-top: 6rem; }
   .course-cols { grid-template-columns: 1fr; }
   .works { grid-template-columns: repeat(2, 1fr); }
